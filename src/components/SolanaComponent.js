@@ -1,17 +1,6 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import Select from 'react-select';
-
-const options = [
-  {
-    value: 'D2bzsFHsJojGi1dq8EM2gYeh3FoqSeYLqBSZoXeG3o6u',
-    label: 'D2bzsFHsJojGi1dq8EM2gYeh3FoqSeYLqBSZoXeG3o6ute',
-  },
-  {
-    value: '8XuUtma18wqGptP4JyC8LPW8vxquq5G8Ke54U1dEnnjj',
-    label: '8XuUtma18wqGptP4JyC8LPW8vxquq5G8Ke54U1dEnnjj',
-  },
-];
 
 const SolanaComponent = () => {
   const [address, setAddress] = useState(
@@ -20,7 +9,6 @@ const SolanaComponent = () => {
   const [balance, setBalance] = useState(null);
   const [selectedToken, setSelectedToken] = useState(null);
   const [tokens, setTokens] = useState([]);
-  const [Filtertokens, setFilterTokens] = useState([]);
 
   const checkBalance = async () => {
     try {
@@ -38,17 +26,15 @@ const SolanaComponent = () => {
     listAvailableTokens();
   }, []);
   const getOptionLabel = (option) => {
-     return ` ${option.address} `;;
+    return ` ${option.address} `;
   };
-   const listAvailableTokens = async () => {
+  const listAvailableTokens = async () => {
     try {
       const response = await fetch(
         'https://tokens.coingecko.com/solana/all.json'
       );
       const tokenListJSON = await response.json();
       setTokens(tokenListJSON.tokens);
-      setFilterTokens(tokenListJSON.tokens);
-      console.log("tokenstokenstokens",tokenListJSON.tokens);
     } catch (error) {
       console.error('Error listing available tokens:', error);
     }
@@ -70,7 +56,11 @@ const SolanaComponent = () => {
   const CustomOption = (props) => {
     return (
       <div>
-        <img src={props.data.address.logoURI} alt="Token logo" style={{ width: '20px', marginRight: '10px' }} />
+        <img
+          src={props.data.address.logoURI}
+          alt="Token logo"
+          style={{ width: '20px', marginRight: '10px' }}
+        />
         {props.label}
       </div>
     );
@@ -108,7 +98,7 @@ const SolanaComponent = () => {
             value={selectedToken}
             getOptionLabel={getOptionLabel}
             components={{
-              tokens: CustomOption
+              tokens: CustomOption,
             }}
           />
         </div>

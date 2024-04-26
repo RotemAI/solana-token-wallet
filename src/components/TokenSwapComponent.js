@@ -37,7 +37,7 @@ const TokenSwapComponent = () => {
   const [open, setOpen] = useState(false);
   const [secondOpen, setOpenSecond] = useState(false);
 
-  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails, setShowDetails] = useState(true);
   const [SecondshowDetails, SecondsetShowDetails] = useState(false);
 
   const [selectedToken, setSelectedToken] = useState(details);
@@ -91,6 +91,10 @@ const TokenSwapComponent = () => {
     }
   }
 
+  useEffect(() => {
+    SetFirstNodeBalance(selectedToken.address);
+    SetsecondNodeBalance(SecondselectedToken.address);
+  }, []);
 
   function handleClick2(token) {
     SecondsetSelectedToken(token);
@@ -155,6 +159,7 @@ const TokenSwapComponent = () => {
                 </div>
               ) : (
                 <div>
+                  {/* <h1>{selectedToken} </h1> */}
                   {/* <button onClick={handleButtonClick}><FaAngleDown /></button> */}
                 </div>
               )}
@@ -167,12 +172,14 @@ const TokenSwapComponent = () => {
             </div>
           </div>
         </div>
+
         <div
           onClick={swapTokens}
           className="bg-[#ccedd2] text-[#42b983] border-[#42b983] border-[1px] rounded-[8px] flex items-center justify-center mx-[50px] p-[6px_10px] text-[14px]"
         >
           Start
         </div>
+
         <div
           onClick={() => setOpenSecond(!secondOpen)}
           className="w-full border-[#42b983] border-[1px] p-[8px_8px_8px_12px] shadow-[0_8px_14px_0_rgba(0,0,0,.05)] rounded-[16px] cursor-pointer"
@@ -251,7 +258,7 @@ const TokenSwapComponent = () => {
                     <div className="relative mt-[34px]">
                       <input
                         type="text"
-                        placeholder="Search token name or contract address"
+                        placeholder="Search token name or contract address ssssss"
                         value={searchQuery}
                         onChange={handleInputChange}
                         className="border-[#c0c4cc] border-[1px] rounded-[4px] outline-none h-[36px] p-[0_30px] text-[14px] w-full"
