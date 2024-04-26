@@ -37,3 +37,23 @@ code {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dropdown-container {
+  margin-bottom: 20px;
+}
+.dropdown:active{
+  border: 1px solid #ccc;;
+}
+
+.selected-token {
+  font-size: 18px;
+  font-weight: bold;
+}

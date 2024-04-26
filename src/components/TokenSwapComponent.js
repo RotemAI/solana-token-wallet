@@ -18,13 +18,13 @@ const details = {
   symbol: 'LUNC',
 };
 const Seconddetails = {
-  address: 'GWgwUUrgai3BFeEJZp7bdsBSYiuDqNmHf9uRusWsf3Yi',
-  chainId: 1,
-  decimals: 18,
+  address: 'LMFzmYL6y1FX8HsEmZ6yNKNzercBmtmpg2ZoLwuUboU',
+  chainId: null,
+  decimals: 9,
   logoURI:
-    'https://assets.coingecko.com/coins/images/13628/thumb/wluna.png?1696513376',
-  name: 'Wrapped Terra Classic',
-  symbol: 'LUNC',
+    'https://assets.coingecko.com/coins/images/32831/thumb/token-LMF.png?1699585799',
+  name: 'Lamas Finance',
+  symbol: 'LMF',
 };
 
 const TokenSwapComponent = () => {
@@ -74,7 +74,6 @@ const TokenSwapComponent = () => {
   };
   function handleClick1(token) {
     setSelectedToken(token);
-    setShowDetails(true);
     SetFirstNodeBalance(token.address);
     setOpen(false);
   }
@@ -109,14 +108,13 @@ const TokenSwapComponent = () => {
         'https://docs-demo.solana-mainnet.quiknode.pro/'
       );
       const balance = await solana.getBalance(publicKey);
+      // setShowDetails(!showDetails);
       SetSecondsetBalanceToken(balance);
     } catch (error) {
       console.error('Error fetching balance:', error);
     }
   }
-  const handleButtonClick = () => {
-    setShowDetails(!showDetails);
-  };
+  const handleButtonClick = () => {};
 
   const handleButtonClick1 = () => {
     setShowDetails(!SecondshowDetails);
@@ -158,10 +156,7 @@ const TokenSwapComponent = () => {
                   </span>
                 </div>
               ) : (
-                <div>
-                  {/* <h1>{selectedToken} </h1> */}
-                  {/* <button onClick={handleButtonClick}><FaAngleDown /></button> */}
-                </div>
+                <div></div>
               )}
               <button className="text-[#686868]" onClick={handleButtonClick}>
                 <FaAngleDown />
@@ -175,7 +170,7 @@ const TokenSwapComponent = () => {
 
         <div
           onClick={swapTokens}
-          className="bg-[#ccedd2] text-[#42b983] border-[#42b983] border-[1px] rounded-[8px] flex items-center justify-center mx-[50px] p-[6px_10px] text-[14px]"
+          className="bg-[#ccedd2] text-[#42b983] cursor-pointer border-[#42b983] border-[1px] rounded-[8px] flex items-center justify-center mx-[50px] p-[6px_10px] text-[14px]"
         >
           Start
         </div>
@@ -201,9 +196,7 @@ const TokenSwapComponent = () => {
                   </span>
                 </div>
               ) : (
-                <div>
-                  {/* <button onClick={handleButtonClick1}><FaAngleDown /></button> */}
-                </div>
+                <div></div>
               )}
               <button className="text-[#686868]" onClick={handleButtonClick1}>
                 <FaAngleDown />

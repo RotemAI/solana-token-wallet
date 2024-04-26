@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
-import Select from 'react-select';
 
 const SolanaComponent = () => {
   const [address, setAddress] = useState(
@@ -53,22 +52,10 @@ const SolanaComponent = () => {
       throw error;
     }
   };
-  const CustomOption = (props) => {
-    return (
-      <div>
-        <img
-          src={props.data.address.logoURI}
-          alt="Token logo"
-          style={{ width: '20px', marginRight: '10px' }}
-        />
-        {props.label}
-      </div>
-    );
-  };
 
-  const handleChange = (selectedOption) => {
-    setSelectedToken(selectedOption);
-    fetchBalance(selectedOption.address)
+  const handleChange = (e) => {
+    setSelectedToken(e.target.value);
+    fetchBalance(e.target.value)
       .then((balance) => setBalance(balance))
       .catch((error) => console.error('Error fetching balance:', error));
   };
@@ -92,15 +79,22 @@ const SolanaComponent = () => {
       </div>
       <div className="flex gap-2 justify-center">
         <div className="select-main">
-          <Select
-            options={tokens}
-            onChange={handleChange}
-            value={selectedToken}
-            getOptionLabel={getOptionLabel}
-            components={{
-              tokens: CustomOption,
-            }}
-          />
+          <div className="container">
+            <div className="dropdown-container">
+              <select
+                className="dropdown border-[#ccc] border-[1px] bg-white p-2 rounded-md outline-none !text-[14px]"
+                value={selectedToken}
+                onChange={handleChange}
+              >
+                <option value="">Select a token</option>
+                {tokens.map((token) => (
+                  <option key={token.address} value={token.address}>
+                    {token.address}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-center mt-2 mb-5">
