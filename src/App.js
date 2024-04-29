@@ -3,6 +3,7 @@ import SolanaComponent from './components/SolanaComponent';
 import { AiFillSafetyCertificate } from 'react-icons/ai';
 import TokenSwapComponent from './components/TokenSwapComponent';
 import { Connection, PublicKey } from '@solana/web3.js';
+import './App.css'
 
 const App = () => {
   const [tab, setTab] = useState('PrivateKey');
@@ -38,6 +39,7 @@ const App = () => {
         </h1>
         <div></div>
         <SolanaComponent />
+        
       </div>
       <div className="max-w-[800px] mx-auto mt-[20px] shadow-[rgba(0,0,0,0.12)_0px_3px_8px] p-4 border-[1px] border-[#dcdcdc]">
         <div>

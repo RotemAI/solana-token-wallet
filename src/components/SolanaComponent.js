@@ -1,107 +1,99 @@
 import React, { useState, useEffect } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
+import Select from 'react-select';
+import '../App.css';
 
 const SolanaComponent = () => {
   const [address, setAddress] = useState(
     '7cVfgArCheMR6Cs4t6vz5rfnqd56vZq4ndaBrY5xkxXy'
   );
   const [balance, setBalance] = useState(null);
-  const [selectedToken, setSelectedToken] = useState(null);
+  const [selectedToken, setSelectedToken] = useState('');
   const [tokens, setTokens] = useState([]);
 
-  const checkBalance = async () => {
-    try {
-      const publicKey = new PublicKey(address);
-      const solana = new Connection(
-        'https://docs-demo.solana-mainnet.quiknode.pro/'
-      );
-      const balance = await solana.getBalance(publicKey);
-      setBalance(balance);
-    } catch (error) {
-      console.error('Error fetching balance:', error);
-    }
-  };
   useEffect(() => {
     listAvailableTokens();
   }, []);
-  const getOptionLabel = (option) => {
-    return ` ${option.address} `;
-  };
+
   const listAvailableTokens = async () => {
     try {
       const response = await fetch(
         'https://tokens.coingecko.com/solana/all.json'
       );
       const tokenListJSON = await response.json();
-      setTokens(tokenListJSON.tokens);
+      const formattedTokens = tokenListJSON.tokens.map((token) => ({
+        value: token.address,
+        label: token.address,
+      }));
+      setTokens(formattedTokens);
     } catch (error) {
       console.error('Error listing available tokens:', error);
     }
   };
 
-  const fetchBalance = async (tokenValue) => {
+  const fetchBalance = async (selectedToken) => {
     try {
-      const publicKey = new PublicKey(tokenValue);
+      const publicKey = new PublicKey(selectedToken);
       const connection = new Connection(
         'https://docs-demo.solana-mainnet.quiknode.pro/'
       );
       const balance = await connection.getBalance(publicKey);
-      return balance;
+      setBalance(balance);
     } catch (error) {
       console.error('Error fetching balance:', error);
-      throw error;
+      setBalance(null); 
     }
   };
 
-  const handleChange = (e) => {
-    setSelectedToken(e.target.value);
-    fetchBalance(e.target.value)
-      .then((balance) => setBalance(balance))
-      .catch((error) => console.error('Error fetching balance:', error));
+  const handleChangeToken = (selectedOption) => {
+    if (selectedOption) {
+      setSelectedToken(selectedOption.value);
+      fetchBalance(selectedOption.value);
+    } else {
+      setSelectedToken('');
+      setBalance(null);
+    }
   };
 
   return (
-    <div className="mt-[30px]">
-      <div className="flex justify-center mb-4 gap-2 ">
+    <div className="solana-container">
+      {' '}
+      <div className="input-section">
         <input
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Enter Solana address"
-          className="border-[#dcdfe6] border-[1px] p-[4px_10px] rounded-[4px] text-[#212121] text-[14px] outline-none max-w-[300px] w-full"
+          className="input-field"
         />
         <button
-          onClick={checkBalance}
-          className="bg-[#42b983] text-white p-[4px_10px] rounded-[4px] text-[14px]"
+          onClick={() => fetchBalance(address)}
+          className="check-balance-button"
         >
           Check Balance
         </button>
       </div>
-      <div className="flex gap-2 justify-center">
-        <div className="select-main">
-          <div className="container">
-            <div className="dropdown-container">
-              <select
-                className="dropdown border-[#ccc] border-[1px] bg-white p-2 rounded-md outline-none !text-[14px]"
-                value={selectedToken}
-                onChange={handleChange}
-              >
-                <option value="">Select a token</option>
-                {tokens.map((token) => (
-                  <option key={token.address} value={token.address}>
-                    {token.address}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
+      <div className="select-section">
+        <Select
+          value={tokens.find((token) => token.value === selectedToken)}
+          onChange={handleChangeToken}
+          options={tokens}
+          placeholder="Select a token"
+          className="select-dropdown"
+          styles={{
+            option: (base) => ({
+              ...base,
+              borderBottom: `1px solid #ccc`,
+              height: '100%',
+            }),
+          }}
+        />
       </div>
-      <div className="flex justify-center mt-2 mb-5">
+      <div className="balance-section">
         {balance !== null ? (
-          <p className="text-[16px] font-semibold">Balance: {balance}</p>
+          <p className="balance-text">Balance: {balance}</p>
         ) : (
-          <p className="text-[#212121] text-[14px]">
+          <p className="balance-text">
             Click 'Check Balance' to fetch the balance
           </p>
         )}

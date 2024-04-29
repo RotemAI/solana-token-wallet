@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState, Fragment ,useCallback} from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 // import { Connection } from '@solana/web3.js';
 import { Connection, PublicKey } from '@solana/web3.js';
@@ -46,13 +46,12 @@ const TokenSwapComponent = () => {
   const [SecondShowbalance, SetSecondsetBalanceToken] = useState();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const swapTokens = async () => {
+  const swapTokens = useCallback( () => {
     setSelectedToken(SecondselectedToken);
     SecondsetSelectedToken(selectedToken);
-
     SetFirstNodeBalance(selectedToken.address);
     SetsecondNodeBalance(SecondselectedToken.address);
-  };
+  },[selectedToken, SecondselectedToken]);
 
   useEffect(() => {
     listAvailableTokens();
@@ -72,11 +71,42 @@ const TokenSwapComponent = () => {
       console.error('Error listing available tokens:', error);
     }
   };
+
   function handleClick1(token) {
-    setSelectedToken(token);
-    SetFirstNodeBalance(token.address);
-    setOpen(false);
+    if (token && token.address) {
+      if (token.address === SecondselectedToken.address) {
+        setSelectedToken(token);
+        setShowDetails(true);
+        SetFirstNodeBalance(token.address);
+        setOpen(false);
+        swapTokens();
+      } else {
+        setSelectedToken(token);
+        setShowDetails(true);
+        SetFirstNodeBalance(token.address);
+        setOpen(false);
+      }
+    } else {
+      console.error("Token object or 'address' property is undefined.");
+    }
   }
+
+  function handleClick2(token) {
+    if (token.address === selectedToken.address) {
+      SecondsetSelectedToken(token);
+      SecondsetShowDetails(true);
+      SetsecondNodeBalance(token.address);
+      setOpenSecond(false);
+      swapTokens();
+    } else {
+      SecondsetSelectedToken(token);
+      SecondsetShowDetails(true);
+      SetsecondNodeBalance(token.address);
+      setOpenSecond(false);
+      console.log('Selected token submitted.');
+    }
+  }
+
   async function SetFirstNodeBalance(address) {
     try {
       const publicKey = new PublicKey(address);
@@ -93,14 +123,14 @@ const TokenSwapComponent = () => {
   useEffect(() => {
     SetFirstNodeBalance(selectedToken.address);
     SetsecondNodeBalance(SecondselectedToken.address);
-  }, []);
+  }, [selectedToken.address, SecondselectedToken.address]);
 
-  function handleClick2(token) {
-    SecondsetSelectedToken(token);
-    SecondsetShowDetails(true);
-    SetsecondNodeBalance(token.address);
-    setOpenSecond(false);
-  }
+  useEffect(() => {
+    if (selectedToken === SecondselectedToken) {
+      swapTokens();
+    }
+  }, [selectedToken, SecondselectedToken, swapTokens]);
+
   async function SetsecondNodeBalance(address) {
     try {
       const publicKey = new PublicKey(address);
@@ -289,11 +319,11 @@ const TokenSwapComponent = () => {
                         All
                       </span>
                     </div>
-                    ￼
+
                     <div className="token-list mt-[15px] h-[300px] overflow-auto">
-                      {Filtertokens.map((token) => (
+                      {Filtertokens.map((token, index) => (
                         <div
-                          key={token.id}
+                          key={`${token.symbol}-${token.logoURI}-${index}`}
                           className="token-row flex gap-[12px] p-[10px_0] hover:bg-[#2b9831a] cursor-pointer"
                           onClick={() => handleClick1(token)}
                         >
@@ -351,7 +381,7 @@ const TokenSwapComponent = () => {
                         onClick={() => setOpen(false)}
                         className="text-[#909399] text-[20px]"
                       >
-                        <IoClose />￼
+                        <IoClose />
                       </button>
                     </div>
                     <div className="relative mt-[34px]">
